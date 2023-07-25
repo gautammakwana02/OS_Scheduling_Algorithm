@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>FCFS</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="./add_point.js"></script>
+
+        <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        
+        <style>
+
+            ::-webkit-scrollbar {
+                width: 0%; 
+              }
+
+            .container{
+                margin: 30px;
+                padding: 20px;
+                background-color: yellowgreen;
+            }
+
+            #head{
+                background-color: rgb(71, 70, 70);
+                margin: 5px;
+                color: white;
+                font-size: 30px;
+                padding: 100px;
+                border: 0cm;   
+
+                }
+        </style>
+    </head>
+    
+    <body>
+        <div id="head">
+            <h1 align="center">
+               <strong> Disk Scheduling: First Come First Serve</strong>
+            </h1>
+          </div>
+          
+        <div class="container">
+            &nbsp;&nbsp; <h4>Enter Request Sequence : </h4><input type="text" id="text1" placeholder="enter order of request sequence : "></input>
+            &nbsp; <input type="button" id="button1" value="Add" onclick="add_element_to_array()"></input>
+            &nbsp; <input type="button" id="button2" value="Remove" onclick="remove_array()"></input><br> <br> &nbsp;&nbsp;
+            <h4>Enter Read/Write Position : </h4><input type="text" id="text2" placeholder="enter read/write head  position : "></input><br>
+            <br> &nbsp;&nbsp;
+            <input type="submit" value="SUBMIT IT" onclick="myfun();" id="continue">
+            <p id="t2" ></p>
+			<p id="t3" ></p>
+        </div>
+        <div id="chartContainer" style=" margin: 0px auto; margin-left:40%;"></div>
+
+        <script>
+            var x = 0,p=1;
+        
+            var array1 = Array();
+            var q=document.createElement("table");
+            q.setAttribute("id","mytable");
+
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                title: {
+                    text: ""
+                },
+                axisX2: {
+                    title: "X Axis",
+
+                },
+                axisY: {
+                    reversed: true
+                },
+                data: [{
+                    axisXType: "secondary",
+                    type: "line",
+                    dataPoints: []
+                }],
+                animationEnabled: false,
+                animationDuration: 2000
+            });
+
+
+            chart.render();
+            function add_element_to_array() 
+            {
+                
+                array1[x] = document.getElementById("text1").value;
+            
+                var row = q.insertRow(-1);
+
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                cell1.innerHTML = "Process : "+p+" -->";
+                cell2.innerHTML = array1[x];
+                document.body.appendChild(q);
+                
+
+                x++;
+                p++;
+                document.getElementById("text1").value = "";
+
+            }
+            console.log(array1);
+            function remove_array()
+            {
+                array1.pop();
+                var x = document.getElementById("mytable").rows.length;
+                document.getElementById("mytable").deleteRow(x-1);
+                console.log(array1);
+                p--;
+            }
+            function myfun()
+            {
+                console.log(array1);
+
+                const array = array1.map((i) => Number(i));
+                console.log(array);
+
+                console.log(array);
+                var head = document.getElementById('text2').value;
+                addPoint(head, 0);
+                //addPoint(head, 0);
+                var seek_count = 0;
+                var distance, cur_track;
+				var avg_seek_count = 0;
+
+                for (var i = 0; i < array.length; i++) {
+                    cur_track = array[i];
+                    addPoint(cur_track, i + 1);
+                    // addPoint(cur_track, i + 1);
+                    // calculate absolute distance 
+                    distance = Math.abs(cur_track - head);
+                    console.log(distance);
+                    console.log(seek_count);
+
+                    // increase the total count 
+                    seek_count += distance;
+
+                    // accessed track is now new head 
+                    head = cur_track;
+                    }
+				avg_seek_count = seek_count/array1.length;
+
+                document.getElementById("t2").innerHTML = "<br><h5>The number of movement for fcfs = </h5>" + seek_count;
+				document.getElementById("t3").innerHTML = "<br><h5>Average Seek Count = </h5>" + avg_seek_count;
+            }
+        </script>
+    
+    </body>
+</html>
